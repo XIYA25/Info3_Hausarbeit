@@ -1,5 +1,6 @@
 package hausarbeit_hsk_2023;
 
+import java.util.UUID;
 import java.time.LocalDate;
 
 public class Hauptprogramm {
@@ -21,53 +22,77 @@ public class Hauptprogramm {
 
         Team team2 = new Team(teamLeiter);
         team2.mitgliedHinzufuegen(new Scientist("Dr. Bauer", "Seismologie", 7));
-        team2.mitgliedHinzufuegen(new Scientist("Dr..prof. Klein ", "Geologie", 9));
+        team2.mitgliedHinzufuegen(new Scientist("Dr. Klein", "Geologie", 9));
         teamManager.teamRegistrieren(team2);
 
         // Naturkatastrophen erstellen und registrieren
-        eventManager.ereignisRegistrieren(new ErdbebenEvent("E01", 8, "Tokio", LocalDate.of(2021, 3, 11), 9, "Starke Erschütterungen"));
-        eventManager.ereignisRegistrieren(new TsunamiEvent("E02", 9, "Jakarta", LocalDate.of(2004, 12, 26), 15, 80, 200, "Hohe Wellen"));
-        eventManager.ereignisRegistrieren(new WaldbrandEvent("E03", 5, "Kalifornien", LocalDate.of(2020, 8, 20), 50000, "Großflächige Waldbrände"));
-        eventManager.ereignisRegistrieren(new ErdbebenEvent("E04", 7, "Mexiko-Stadt", LocalDate.of(1985, 9, 19), 8, "Gebäudeschäden"));
+        String erdbebenId = UUID.randomUUID().toString();
+        eventManager.ereignisRegistrieren(new ErdbebenEvent(erdbebenId, 8, "Tokio", LocalDate.of(2021, 3, 11), 9, "Starke Erschütterungen"));
+
+        String tsunamiId = UUID.randomUUID().toString();
+        eventManager.ereignisRegistrieren(new TsunamiEvent(tsunamiId, 9, "Jakarta", LocalDate.of(2004, 12, 26), 15, 80, 300, "Hohe Wellen"));
+        
+        String weitererWaldbrandId = UUID.randomUUID().toString();
+        eventManager.ereignisRegistrieren(new WaldbrandEvent(weitererWaldbrandId, 6, "Amazonas", LocalDate.of(2022, 7, 15), 80000, "Umfangreiche Brände im Regenwaldgebiet"));
 
         // Teams den Naturkatastrophen zuweisen
-        eventManager.benutzerRegistrieren(new EventRegistration("R01", team1, eventManager.getEreignis("E01")));
-        eventManager.benutzerRegistrieren(new EventRegistration("R02", team2, eventManager.getEreignis("E02")));
-        eventManager.benutzerRegistrieren(new EventRegistration("R03", team1, eventManager.getEreignis("E03")));
-        eventManager.benutzerRegistrieren(new EventRegistration("R04", team2, eventManager.getEreignis("E04")));
+        String registrierungId1 = UUID.randomUUID().toString();
+        eventManager.benutzerRegistrieren(new EventRegistration(registrierungId1, team1, eventManager.getEreignis(erdbebenId)));
 
-                // Ausgabe der Teams
-                System.out.println("Alle Teams:");
-                System.out.println("---------------------");
-                for (Team team : teamManager.getAlleTeams()) {
-                    System.out.println("> Team ID: " + team.getTeamId());
-                    System.out.println("> Teamleiter: " + team.getTeamLeiter().getName() + " (" + team.getTeamLeiter().getFachgebiet() + ")");
-                    for (Scientist mitglied : team.getTeamMitglieder()) {
-                        System.out.println("> Mitglied: " + mitglied.getName() + " (" + mitglied.getFachgebiet() + ")");
-                    }
-                    System.out.println();
-                }
+        String registrierungId2 = UUID.randomUUID().toString();
+        eventManager.benutzerRegistrieren(new EventRegistration(registrierungId2, team2, eventManager.getEreignis(tsunamiId)));
+        
+        String registrierungIdWeitererWaldbrand = UUID.randomUUID().toString();
+        eventManager.benutzerRegistrieren(new EventRegistration(registrierungIdWeitererWaldbrand, team1, eventManager.getEreignis(weitererWaldbrandId)));
 
-                // Ausgabe der Naturkatastrophen
-                System.out.println("Alle Naturkatastrophen:");
-                System.out.println("---------------------");
-                for (Event ereignis : eventManager.getAlleEreignisse()) {
-                    System.out.println("> Name: " + ereignis.getEventName());
-                    System.out.println("> Typ: " + ereignis.getEventType());
-                    System.out.println("> Datum: " + ereignis.getDatum());
-                    System.out.println("> Ort: " + ereignis.getDescription().getOrt());
-                    System.out.println("> Beschreibung: " + ereignis.getDescription().getBesonderheit());
-                    System.out.println();
-                }
-
-                // Ausgabe der Benutzerregistrierungen
-                System.out.println("Benutzer Registrierungen:");
-                System.out.println("-------------------------");
-                for (EventRegistration registrierung : eventManager.getAlleRegistrierungen()) {
-                    System.out.println("> Team: " + registrierung.getTeam().getTeamId());
-                    System.out.println("> Katastrophe: " + registrierung.getEreignis().getEventName());
-                    // Optional: Weitere Details der Registrierung
-                    System.out.println();
-                }
+        // Ausgabe der Teams
+        System.out.println("Alle Teams:");
+        System.out.println("---------------------");
+        for (Team team : teamManager.getAlleTeams()) {
+            System.out.println("> Team ID: " + team.getTeamId());
+            System.out.println("> Teamleiter: " + team.getTeamLeiter().getName() + " (" + team.getTeamLeiter().getFachgebiet() + ")");
+            for (Scientist mitglied : team.getTeamMitglieder()) {
+                System.out.println("> Mitglied: " + mitglied.getName() + " (" + mitglied.getFachgebiet() + ")");
             }
+            System.out.println();
+        }
+
+        // Ausgabe der Naturkatastrophen
+        System.out.println("Alle Naturkatastrophen:");
+        System.out.println("---------------------");
+        for (Event ereignis : eventManager.getAlleEreignisse()) {
+            System.out.println("> Name: " + ereignis.getEventName());
+            System.out.println("> Typ: " + ereignis.getEventType());
+            System.out.println("> Datum: " + ereignis.getDatum());
+            System.out.println("> Ort: " + ereignis.getDescription().getOrt());
+            System.out.println("> Beschreibung: " + ereignis.getDescription().getBesonderheit());
+            System.out.println();
+        }
+
+        // Ausgabe der Benutzerregistrierungen
+        System.out.println("Benutzer Registrierungen:");
+        System.out.println("-------------------------");
+        for (EventRegistration registrierung : eventManager.getAlleRegistrierungen()) {
+            Event registriertesEreignis = registrierung.getEreignis();
+            System.out.println("> Team: " + registrierung.getTeam().getTeamId());
+            System.out.println("> Katastrophe: " + registriertesEreignis.getEventName());
+            System.out.println("> Datum der Katastrophe: " + registriertesEreignis.getDatum());
+            System.out.println("> Beschreibung: " + registriertesEreignis.getDescription().getBesonderheit());
+
+            // Spezifische Details für verschiedene Ereignistypen mit Einheiten
+            if (registriertesEreignis instanceof ErdbebenEvent) {
+                ErdbebenEvent erdbeben = (ErdbebenEvent) registriertesEreignis;
+                System.out.println("> Stärke: " + erdbeben.getStaerke() + " (Richterskala)");
+            } else if (registriertesEreignis instanceof TsunamiEvent) {
+                TsunamiEvent tsunami = (TsunamiEvent) registriertesEreignis;
+                System.out.println("> Höhe: " + tsunami.getHoehe() + " Meter");
+                System.out.println("> Geschwindigkeit: " + tsunami.getGeschwindigkeit() + " km/h");
+                System.out.println("> Breite: " + tsunami.getBreite() + " km");
+            } else if (registriertesEreignis instanceof WaldbrandEvent) {
+                WaldbrandEvent waldbrand = (WaldbrandEvent) registriertesEreignis;
+                System.out.println("> Ausdehnung: " + waldbrand.getAusdehnung() + " Hektar");
+            }
+           System.out.println();
+        }
+    }
 }
